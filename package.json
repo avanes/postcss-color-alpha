@@ -1,26 +1,34 @@
 {
-    "name": "postcss-color-alpha",
-    "version": "0.0.0",
-    "description": "PostCSS plugin to transform color from '#rgb a' to rgba()",
-    "keywords": ["postcss", "css", "postcssplugin", "color", "alpha"],
-    "author": "Ivan Vlasenko <avanes@avanes.ru>",
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url":  "https://github.com/avanes/postcss-color-alpha.git"
-    },
-    "dependencies": {
-        "postcss": "^4.0.3"
-    },
-    "devDependencies": {
-        "jshint-stylish": "1.0.0",
-        "gulp-jshint":    "1.9.2",
-        "gulp-mocha":     "2.0.0",
-        "mocha":          "2.1.0",
-        "chai":           "1.10.0",
-        "gulp":           "3.8.11"
-    },
-    "scripts": {
-        "test": "gulp"
-    }
+  "name": "postcss-color-alpha",
+  "version": "0.0.0",
+  "description": "PostCSS plugin to transform color from '#rgb a' to rgba()",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcssplugin",
+    "color",
+    "alpha"
+  ],
+  "author": "Ivan Vlasenko <avanes@avanes.ru>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/avanes/postcss-color-alpha.git"
+  },
+  "dependencies": {
+    "color": "^0.8.0",
+    "postcss": "^4.0.3",
+    "postcss-message-helpers": "^2.0.0"
+  },
+  "devDependencies": {
+    "jshint-stylish": "1.0.0",
+    "gulp-jshint": "1.9.2",
+    "gulp-mocha": "2.0.0",
+    "mocha": "2.1.0",
+    "chai": "1.10.0",
+    "gulp": "3.8.11"
+  },
+  "scripts": {
+    "test": "gulp"
+  }
 }

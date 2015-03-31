@@ -9,10 +9,16 @@ var test = function (input, output, opts) {
 
 describe('postcss-color-alpha', function () {
 
-    /* Write tests here
+    it('converts black() to rgba', function () {
+        test('a{ color: black(.1) }', 'a{ color: rgba(0, 0, 0, 0.1) }');
+    });
 
-    it('does something', function () {
-        test('a{ }', 'a{ }');
-    });*/
+    it('converts white() to rgba', function () {
+        test('a{ color: white(.2) }', 'a{ color: rgba(255, 255, 255, 0.2) }');
+    });
+
+    it('converts `#rgb a` to rgba', function () {
+        test('a{ color: #0fc .3 }', 'a{ color: rgba(0, 255, 204, 0.3) }');
+    });
 
 });

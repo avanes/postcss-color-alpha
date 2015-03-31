@@ -6,32 +6,18 @@
 
 ```css
 /* Input examples */
-.foo {
-    color: black(.1)
-}
-
-.bar {
-    color: white(0.2);
-}
-
-.baz {
-    color: #0fc 0.3;
-}
+.foo { color: black(.1) }
+.bar { color: white(0.2); }
+.baz { color: #0fc 0.3; }
+.woo { color: #00ffcc 0.4; }
 ```
 
 ```css
 /* Output examples */
-.foo {
-  color: rgba(0, 0, 0, 0.1);
-}
-
-.bar {
-  color: rgba(255, 255, 255, 0.2);
-}
-
-.baz {
-  color: rgba(0, 255, 204, 0.3);
-}
+.foo { color: rgba(0, 0, 0, 0.1); }
+.bar { color: rgba(255, 255, 255, 0.2); }
+.baz { color: rgba(0, 255, 204, 0.3); }
+.woo { color: rgba(0, 255, 204, 0.4); }
 ```
 
 ## Usage

@@ -18,11 +18,11 @@ describe('postcss-color-alpha', function () {
     });
 
     it('converts `#rgb a` to rgba', function () {
-        test('a{ color: #0fc .3 }', 'a{ color: rgba(0, 255, 204, 0.3) }');
+        test('a{ color: #0fc.3 }', 'a{ color: rgba(0, 255, 204, 0.3) }');
     });
 
     it('converts `#rrggbb a` to rgba', function () {
-        test('a{ color: #00ffcc .4 }', 'a{ color: rgba(0, 255, 204, 0.4) }');
+        test('a{ color: #00ffcc.45 }', 'a{ color: rgba(0, 255, 204, 0.45) }');
     });
 
 });

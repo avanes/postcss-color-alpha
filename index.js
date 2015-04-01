@@ -1,7 +1,7 @@
 var color = require("color");
 var messageHelpers = require("postcss-message-helpers");
 
-var HEX_A_RE = /#(([0-9a-f]{3}|[0-9a-f]{6})\ (0?\.\d+))\b/i;
+var HEX_A_RE = /#(([0-9a-f]{3}|[0-9a-f]{6})(\.\d+))\b/i;
 var BW_RE    = /\b(black|white)\((0?\.\d+)\)/i;
 
 module.exports = function () {
@@ -49,7 +49,6 @@ var transformBlackWhiteAlpha = function(string) {
     var alpha;
 
     matches = BW_RE.exec(string);
-    console.log(string);
     if ( !matches )
         return string;
     if ( matches[1] === "black" )

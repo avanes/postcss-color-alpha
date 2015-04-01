@@ -10,6 +10,7 @@
 .bar { color: white(0.2); }
 .baz { color: #0fc.3; }
 .woo { color: #00ffcc.45; }
+.hoo { border-color: #000 #000.5 white white(0.5); }
 ```
 
 ```css
@@ -18,6 +19,7 @@
 .bar { color: rgba(255, 255, 255, 0.2); }
 .baz { color: rgba(0, 255, 204, 0.3); }
 .woo { color: rgba(0, 255, 204, 0.45); }
+.hoo { border-color: #000 rgba(0, 0, 0, 0.5) white rgba(0, 0, 0, 0.5); }
 ```
 
 ## Usage

@@ -28,4 +28,17 @@ describe('postcss-color-alpha', function () {
     it('converts `#rgb.a` to rgba in long prop values', function () {
         test('div{ border: solid 1px #0fc.45 }', 'div{ border: solid 1px rgba(0, 255, 204, 0.45) }');
     });
+
+    it('converts black() or white() to rgba in long prop values', function () {
+        test('div{ border: solid 1px black(.9) }', 'div{ border: solid 1px rgba(0, 0, 0, 0.9) }');
+    });
+
+    it('converts `#rgb.a` to rgba in series', function () {
+        test('div{ border-color: #0fc.1 #000.2 #fff.3 #ccc.4 }', 'div{ border-color: rgba(0, 255, 204, 0.1) rgba(0, 0, 0, 0.2) rgba(255, 255, 255, 0.3) rgba(204, 204, 204, 0.4) }');
+    });
+
+    it('converts mixed colors to rgba', function () {
+        test('div{ border-color: #0fc #000.2 white(.3) black }', 'div{ border-color: #0fc rgba(0, 0, 0, 0.2) rgba(255, 255, 255, 0.3) black }');
+    });
+
 });

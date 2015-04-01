@@ -1,7 +1,7 @@
 var color = require("color");
 var messageHelpers = require("postcss-message-helpers");
 
-var HEX_A_RE = /#(([0-9a-f]{3}|[0-9a-f]{6})(\.\d+))\b/i;
+var HEX_A_RE = /#([0-9a-f]{3}|[0-9a-f]{6})(\.\d+)\b/i;
 var BW_RE    = /\b(black|white)\((0?\.\d+)\)/i;
 
 module.exports = function () {
@@ -29,38 +29,51 @@ module.exports.postcss = function (css) {
 
 
 var transformHexAlpha = function(string) {
-    var matches;
-    var rgbHex;
-    var alpha;
+    var convertedParts = [];
+    var parts = string.split(/\s+(?![^(]*\))/);
 
-    matches = HEX_A_RE.exec(string);
-    if ( !matches )
-        return string;
+    for (var i = 0; i < parts.length; i++) {
+        var part = parts[i];
+        var matches = HEX_A_RE.exec(part);
+        if ( !matches ) {
+            convertedParts.push(part);
+            continue;
+        }
 
-    rgbHex = matches[2];
-    alpha  = matches[3];
+        var rgbHex = matches[1];
+        var alpha  = matches[2];
 
-    return string.slice(0, matches.index) + hexAlphaToRgba(rgbHex, alpha);
+        convertedParts.push(hexAlphaToRgba(rgbHex, alpha));
+    }
+
+    if ( convertedParts.length === 0) return string;
+    return convertedParts.join(' ').trim();
 };
 
 var transformBlackWhiteAlpha = function(string) {
-    var rgbHex;
-    var matches;
-    var alpha;
+    var convertedParts = [];
+    var parts = string.split(/\s+(?![^(]*\))/);
 
-    matches = BW_RE.exec(string);
-    if ( !matches )
-        return string;
-    if ( matches[1] === "black" )
-        rgbHex = "000";
-    else if ( matches[1] === "white" )
-        rgbHex = "FFF";
-    else
-        return string;
+    for (var i = 0; i < parts.length; i++) {
+        var rgbHex;
+        var alpha;
+        var part = parts[i];
+        var matches = BW_RE.exec(part);
+        if ( !matches ) {
+            convertedParts.push(part);
+            continue;
+        }
+        if ( matches[1] === "black" )
+            rgbHex = "000";
+        else if ( matches[1] === "white" )
+            rgbHex = "FFF";
 
-    alpha  = matches[2];
+        alpha  = matches[2];
+        convertedParts.push(hexAlphaToRgba(rgbHex, alpha));
+    }
 
-    return string.slice(0, matches.index) + hexAlphaToRgba(rgbHex, alpha);
+    if ( convertedParts.length === 0) return string;
+    return convertedParts.join(' ').trim();
 };
 
 function hexAlphaToRgba(hex, alpha) {

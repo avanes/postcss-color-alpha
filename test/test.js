@@ -17,12 +17,15 @@ describe('postcss-color-alpha', function () {
         test('a{ color: white(.2) }', 'a{ color: rgba(255, 255, 255, 0.2) }');
     });
 
-    it('converts `#rgb a` to rgba', function () {
+    it('converts `#rgb.a` to rgba', function () {
         test('a{ color: #0fc.3 }', 'a{ color: rgba(0, 255, 204, 0.3) }');
     });
 
-    it('converts `#rrggbb a` to rgba', function () {
+    it('converts `#rrggbb.a` to rgba', function () {
         test('a{ color: #00ffcc.45 }', 'a{ color: rgba(0, 255, 204, 0.45) }');
     });
 
+    it('converts `#rgb.a` to rgba in long prop values', function () {
+        test('div{ border: solid 1px #0fc.45 }', 'div{ border: solid 1px rgba(0, 255, 204, 0.45) }');
+    });
 });

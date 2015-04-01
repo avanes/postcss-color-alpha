@@ -40,7 +40,7 @@ var transformHexAlpha = function(string) {
     rgbHex = matches[2];
     alpha  = matches[3];
 
-    return hexAlphaToRgba(rgbHex, alpha);
+    return string.slice(0, matches.index) + hexAlphaToRgba(rgbHex, alpha);
 };
 
 var transformBlackWhiteAlpha = function(string) {
@@ -60,7 +60,7 @@ var transformBlackWhiteAlpha = function(string) {
 
     alpha  = matches[2];
 
-    return hexAlphaToRgba(rgbHex, alpha);
+    return string.slice(0, matches.index) + hexAlphaToRgba(rgbHex, alpha);
 };
 
 function hexAlphaToRgba(hex, alpha) {

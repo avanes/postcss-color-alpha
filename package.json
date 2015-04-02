@@ -1,7 +1,7 @@
 {
   "name": "postcss-color-alpha",
-  "version": "0.0.3",
-  "description": "PostCSS plugin to transform color from '#rgb a' to rgba()",
+  "version": "0.0.4",
+  "description": "PostCSS plugin to transform color from '#rgb.a' to rgba()",
   "keywords": [
     "postcss",
     "css",

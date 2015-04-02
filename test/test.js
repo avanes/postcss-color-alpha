@@ -41,8 +41,4 @@ describe('postcss-color-alpha', function () {
         test('div{ border-color: #0fc #000.2 white(.3) black }', 'div{ border-color: #0fc rgba(0, 0, 0, 0.2) rgba(255, 255, 255, 0.3) black }');
     });
 
-    it('converts many colors to rgba', function () {
-        test('div{ border-color: #000.2 #000.3 }', 'div{ border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) }');
-    });
-
 });

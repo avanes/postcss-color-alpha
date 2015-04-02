@@ -2,7 +2,7 @@ var color = require("color");
 var messageHelpers = require("postcss-message-helpers");
 
 var HEX_A_RE = /#([0-9a-f]{3}|[0-9a-f]{6})(\.\d+)\b/i;
-var BW_RE    = /\b(black|white)\((0?\.\d+)\)/i;
+var BW_RE    = /\b(black|white)\((0?\.?\d+)\)/i;
 
 module.exports = function () {
     return function (css) {

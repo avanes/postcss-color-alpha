@@ -10,7 +10,7 @@ var test = function (input, output, opts) {
 describe('postcss-color-alpha', function () {
 
     it('converts black() to rgba', function () {
-        test('a{ color: black(.1) }', 'a{ color: rgba(0, 0, 0, 0.1) }');
+        test('a{ color: black(0) }', 'a{ color: rgba(0, 0, 0, 0) }');
     });
 
     it('converts white() to rgba', function () {
@@ -39,6 +39,10 @@ describe('postcss-color-alpha', function () {
 
     it('converts mixed colors to rgba', function () {
         test('div{ border-color: #0fc #000.2 white(.3) black }', 'div{ border-color: #0fc rgba(0, 0, 0, 0.2) rgba(255, 255, 255, 0.3) black }');
+    });
+
+    it('converts many colors to rgba', function () {
+        test('div{ border-color: #000.2 #000.3 }', 'div{ border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) }');
     });
 
 });

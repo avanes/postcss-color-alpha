@@ -1,4 +1,4 @@
-# PostCSS Color Alpha [![Build Status](https://travis-ci.org/avanes/postcss-color-alpha.svg)](https://travis-ci.org/avanes/postcss-color-alpha)
+# PostCSS Color Alpha [![Build Status](https://travis-ci.org/avanes/postcss-color-alpha.svg)](https://travis-ci.org/avanes/postcss-color-alpha)  [![NPM version](https://badge.fury.io/js/postcss-color-alpha.svg)](https://www.npmjs.org/package/postcss-color-alpha)
 
 [PostCSS] plugin to transform color from `#rgb.a` to `rgba()`.
 

@@ -1,5 +1,6 @@
 var color = require("color");
 var messageHelpers = require("postcss-message-helpers");
+var list = require('postcss').list;
 
 var HEX_A_RE = /#([0-9a-f]{3}|[0-9a-f]{6})(\.\d+)\b/i;
 var BW_RE    = /\b(black|white)\((0?\.?\d+)\)/i;
@@ -30,10 +31,16 @@ module.exports.postcss = function (css) {
 
 var transformHexAlpha = function(string) {
     var convertedParts = [];
-    var parts = string.split(/\s+(?![^(]*\))/);
+    var parts = list.space(string);
 
     for (var i = 0; i < parts.length; i++) {
         var part = parts[i];
+
+        if (part.match(BRACKETS_RE)) {
+            convertedParts.push(checkInnerBrackets(part));
+            continue;
+        }
+
         var matches = HEX_A_RE.exec(part);
         if ( !matches ) {
             convertedParts.push(part);

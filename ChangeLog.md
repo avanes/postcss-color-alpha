@@ -1,3 +1,9 @@
+# 0.0.5 - 2015-04-09
+
+- Updated: postcss 4.1
+- Fixed: #rgb.a in brackets (for ex: radial-gradient(white(0.05), white(0)))
+- Changed: black() and white() can be passed without argument
+
 # 0.0.4 - 2015-04-02
 
 - Changed: black() and white() accepts 0 in argument

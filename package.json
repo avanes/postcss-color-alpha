@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "color": "^0.8.0",
-    "postcss": "^4.0.3",
     "gulp-watch": "^4.2.4",
+    "postcss": "^4.1.0",
     "postcss-message-helpers": "^2.0.0"
   },
   "devDependencies": {

@@ -34,7 +34,7 @@ describe('postcss-color-alpha', function () {
     });
 
     it('converts black() or white() to rgba in long prop values', function () {
-        test('div{ border: solid 1px black(.9) }', 'div{ border: solid 1px rgba(0, 0, 0, 0.9) }');
+        test('div{ border: solid 1px black(0.9) }', 'div{ border: solid 1px rgba(0, 0, 0, 0.9) }');
     });
 
     it('converts `#rgb.a` to rgba in series', function () {
@@ -45,4 +45,11 @@ describe('postcss-color-alpha', function () {
         test('div{ border-color: #0fc #000.2 white(.3) black }', 'div{ border-color: #0fc rgba(0, 0, 0, 0.2) rgba(255, 255, 255, 0.3) black }');
     });
 
+    it('converts #rgb.a in gradients', function() {
+        test('div{ background: #004400 radial-gradient(#fff.05, #fff.0) }', 'div{ background: #004400 radial-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)) }');
+    });
+
+    it('converts white() in gradients', function() {
+        test('div{ background: #004400 radial-gradient(white(0.05), white(0)) }', 'div{ background: #004400 radial-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)) }');
+    });
 });

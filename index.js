@@ -4,6 +4,8 @@ var list = require('postcss').list;
 
 var HEX_A_RE    = /#([0-9a-f]{3}|[0-9a-f]{6})(\.\d+)\b/i;
 var BW_RE       = /(black|white)\((0?\.?\d+)?\)/i;
+var BW_RE_2     = /^(black|white)\((0?\.?\d+)?\)/i;
+var BRACKETS_RE = /\((..*)\)/;
 
 module.exports = function () {
     return function (css) {
@@ -14,11 +16,11 @@ module.exports = function () {
             }
 
             decl.value = messageHelpers.try(function () {
-                return transformHexAlpha(decl.value, decl.source);
+                return transformBlackWhiteAlpha(decl.value, decl.source);
             }, decl.source);
 
             decl.value = messageHelpers.try(function () {
-                return transformBlackWhiteAlpha(decl.value, decl.source);
+                return transformHexAlpha(decl.value, decl.source);
             }, decl.source);
         });
     };
@@ -54,31 +56,51 @@ var transformHexAlpha = function(string) {
 
 var transformBlackWhiteAlpha = function(string) {
     var convertedParts = [];
-    var parts = string.split(/\s+(?![^(]*\))/);
+    var parts = list.space(string);
 
     for (var i = 0; i < parts.length; i++) {
         var rgbHex;
         var alpha;
         var part = parts[i];
-        var matches = BW_RE.exec(part);
+        var matches = BW_RE_2.exec(part);
+
         if ( !matches ) {
-            convertedParts.push(part);
+            convertedParts.push(checkInnerBrackets(part));
             continue;
         }
+
+        part = checkInnerBrackets(part);
+        alpha  = matches[2];
+        if ( typeof alpha === 'undefined' )
+            alpha = '.0';
+        if ( alpha.indexOf('.') == -1 )
+            alpha = '.' + alpha;
+        if ( alpha[0] === '0' )
+            alpha = alpha.substr(1);
         if ( matches[1] === "black" )
             rgbHex = "000";
         else if ( matches[1] === "white" )
             rgbHex = "FFF";
 
-        alpha  = matches[2];
-        if ( typeof alpha === 'undefined' )
-            alpha = '.0';
-        convertedParts.push(hexAlphaToRgba(rgbHex, alpha));
+        convertedParts.push('#' + rgbHex + alpha);
     }
 
     if ( convertedParts.length === 0) return string;
     return convertedParts.join(' ').trim();
 };
+
+function checkInnerBrackets(string) {
+    var convertedParts = [];
+    var matches = BRACKETS_RE.exec(string);
+    if ( !matches )
+        return string;
+    var parts = list.comma(matches[1]);
+    for (var i = 0; i < parts.length; i++) {
+        var part = parts[i];
+        convertedParts.push(transformHexAlpha(transformBlackWhiteAlpha(part)));
+    }
+    return string.substr(0, matches.index) + '(' + convertedParts.join(', ') + ')';
+}
 
 function hexAlphaToRgba(hex, alpha) {
     var hexNormalized;

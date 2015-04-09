@@ -52,4 +52,8 @@ describe('postcss-color-alpha', function () {
     it('converts white() in gradients', function() {
         test('div{ background: #004400 radial-gradient(white(0.05), white(0)) }', 'div{ background: #004400 radial-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)) }');
     });
+
+    it('converts comma-separated values', function() {
+        test('.bg { text-shadow: 1px 1px 1px #0fc.1, 3px 3px 5px #fff.05;}', '.bg { text-shadow: 1px 1px 1px rgba(0, 255, 204, 0.1), 3px 3px 5px rgba(255, 255, 255, 0.05);}');
+    });
 });

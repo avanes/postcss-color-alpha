@@ -17,6 +17,10 @@ describe('postcss-color-alpha', function () {
         test('a{ color: white(.2) }', 'a{ color: rgba(255, 255, 255, 0.2) }');
     });
 
+    it('converts white() without arguments to rgba', function () {
+        test('a{ color: white() }', 'a{ color: rgba(255, 255, 255, 0) }');
+    });
+
     it('converts `#rgb.a` to rgba', function () {
         test('a{ color: #0fc.3 }', 'a{ color: rgba(0, 255, 204, 0.3) }');
     });

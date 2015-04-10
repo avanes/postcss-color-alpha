@@ -47,7 +47,7 @@ var transformHexAlpha = function(string) {
         var rgbHex = matches[1];
         var alpha  = matches[2];
 
-        convertedParts.push(hexAlphaToRgba(rgbHex, alpha));
+        convertedParts.push(part.replace(HEX_A_RE, hexAlphaToRgba(rgbHex, alpha)));
     }
 
     if ( convertedParts.length === 0) return string;

@@ -1,3 +1,7 @@
+# 0.0.6 - 2015-04-10
+
+- Fixed: Fixed processing of comma-separated values
+
 # 0.0.5 - 2015-04-09
 
 - Updated: postcss 4.1

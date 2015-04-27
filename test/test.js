@@ -8,13 +8,17 @@ var test = function (input, output, opts) {
 };
 
 describe('postcss-color-alpha', function () {
-
     it('converts black() to rgba', function () {
         test('a{ color: black(0) }', 'a{ color: rgba(0, 0, 0, 0) }');
     });
 
     it('converts white() to rgba', function () {
+        test('a{ color: black(.3) }', 'a{ color: rgba(0, 0, 0, 0.3) }');
         test('a{ color: white(.2) }', 'a{ color: rgba(255, 255, 255, 0.2) }');
+        test('a{ color: black(0) }', 'a{ color: rgba(0, 0, 0, 0) }');
+        test('a{ color: white(0) }', 'a{ color: rgba(255, 255, 255, 0) }');
+        test('a{ color: black(1) }', 'a{ color: #000 }');
+        test('a{ color: white(1) }', 'a{ color: #FFF }');
     });
 
     it('converts white() without arguments to rgba', function () {

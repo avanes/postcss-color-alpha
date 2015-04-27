@@ -73,8 +73,10 @@ var transformBlackWhiteAlpha = function(string) {
         alpha  = matches[2];
         if ( typeof alpha === 'undefined' )
             alpha = '.0';
-        if ( alpha.indexOf('.') == -1 )
+        if ( alpha.indexOf('.') === -1 && alpha !== '1')
             alpha = '.' + alpha;
+        if ( alpha === '1' )
+            alpha = '';
         if ( alpha[0] === '0' )
             alpha = alpha.substr(1);
         if ( matches[1] === "black" )

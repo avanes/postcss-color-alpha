@@ -11,6 +11,7 @@
 .baz { color: #0fc.3; }
 .woo { color: #00ffcc.45; }
 .hoo { border-color: #000 #000.5 white white(0.5); }
+.boo { text-shadow: 1px 1px 1px #0fc.1, 3px 3px 5px rgba(#fff, .5); }
 ```
 
 ```css
@@ -20,6 +21,7 @@
 .baz { color: rgba(0, 255, 204, 0.3); }
 .woo { color: rgba(0, 255, 204, 0.45); }
 .hoo { border-color: #000 rgba(0, 0, 0, 0.5) white rgba(255, 255, 255, 0.5); }
+.boo { text-shadow: 1px 1px 1px rgba(0, 255, 204, 0.1), 3px 3px 5px rgba(255, 255, 255, 0.5); }
 ```
 
 ## Install

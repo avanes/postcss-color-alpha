@@ -60,4 +60,10 @@ describe('postcss-color-alpha', function () {
     it('converts comma-separated values', function() {
         test('.bg { text-shadow: 1px 1px 1px #0fc.1, 3px 3px 5px #fff.05;}', '.bg { text-shadow: 1px 1px 1px rgba(0, 255, 204, 0.1), 3px 3px 5px rgba(255, 255, 255, 0.05);}');
     });
+
+    it('convertas rgba(#rgb, a) to rgba(r, g, b, a)', function() {
+        test('a{ color: rgba(#000, .6) }', 'a{ color: rgba(0, 0, 0, 0.6) }');
+        test('b{ border-color: rgba(#000, .6) rgba(#fff, 0.1) #333 #666 }', 'b{ border-color: rgba(0, 0, 0, 0.6) rgba(255, 255, 255, 0.1) #333 #666 }');
+        test('.bg { text-shadow: 1px 1px 1px rgba(#0fc, .1), 3px 3px 5px rgba(#fff, .05);}', '.bg { text-shadow: 1px 1px 1px rgba(0, 255, 204, 0.1), 3px 3px 5px rgba(255, 255, 255, 0.05);}');
+    });
 });

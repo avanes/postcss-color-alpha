@@ -1,3 +1,7 @@
+# 0.0.8
+
+- Added: rgba(#rgb, a) syntax
+
 # 0.0.7
 
 - Fixed: proper white(1) and black(1) (was rgba(..., 0.1))

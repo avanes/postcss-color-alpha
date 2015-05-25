@@ -1,6 +1,7 @@
+var postcss = require('postcss');
 var color = require("color");
 var messageHelpers = require("postcss-message-helpers");
-var list = require('postcss').list;
+var list = postcss.list;
 
 var HEX_A_RE    = /#([0-9a-f]{3}|[0-9a-f]{6})(\.\d+)\b/i;
 var BW_RE       = /(black|white)\((0?\.?\d+)?\)/i;
@@ -8,8 +9,8 @@ var BW_RE_2     = /^(black|white)\((0?\.?\d+)?\)/i;
 var BRACKETS_RE = /\((..*)\)/;
 var RGBA_RE     = /rgba\(#([0-9a-f]{3}|[0-9a-f]{6}),\ ?(0?\.?\d+)\)/i;
 
-module.exports = function () {
-    return function (css) {
+module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
+    return function (css, result) {
         // Transform CSS AST here
         css.eachDecl(function transformDecl(decl) {
             if ( !decl.value || !(
@@ -34,7 +35,7 @@ module.exports = function () {
             }, decl.source);
         });
     };
-};
+});
 
 module.exports.postcss = function (css) {
     return module.exports()(css);

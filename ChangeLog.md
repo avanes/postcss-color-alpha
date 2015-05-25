@@ -1,3 +1,7 @@
+# 0.0.9
+
+- Updated: used plugin guidelines
+
 # 0.0.8
 
 - Added: rgba(#rgb, a) syntax

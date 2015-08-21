@@ -67,7 +67,10 @@ describe('postcss-color-alpha', function () {
         test('.bg { text-shadow: 1px 1px 1px rgba(#0fc, .1), 3px 3px 5px rgba(#fff, .05);}', '.bg { text-shadow: 1px 1px 1px rgba(0, 255, 204, 0.1), 3px 3px 5px rgba(255, 255, 255, 0.05);}');
     });
 
-    it('converts rgba(#rgb, 0) to rgba(r, g, b, 0)', function() {
-        test('a{ color: rgba(#0fc, 0) }', 'a{ color: rgba(0, 255, 204, 0) }');
+    it('converts rgba(#rgb, 0) in gradients', function() {
+        test(
+            'background-image: linear-gradient(to bottom, rgba(#fff, .6) 0%, rgba(#fff, 0), 100%);',
+            'background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0), 100%);'
+        );
     });
 });

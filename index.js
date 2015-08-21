@@ -8,6 +8,7 @@ var BW_RE       = /(black|white)\((0?\.?\d+)?\)/i;
 var BW_RE_2     = /^(black|white)\((0?\.?\d+)?\)/i;
 var BRACKETS_RE = /\((..*)\)/;
 var RGBA_RE     = /rgba\(#([0-9a-f]{3}|[0-9a-f]{6}),\ ?(0?\.?\d+)\)/i;
+var RGBA_RE_2   = /^rgba\(#([0-9a-f]{3}|[0-9a-f]{6}),\ ?(0?\.?\d+)\)/i;
 
 module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
     return function (css, result) {
@@ -54,9 +55,9 @@ var transformRgbAlpha = function(string) {
         for (var j = 0; j < parts.length; j++) {
             var part = parts[j];
 
-            var matches = RGBA_RE.exec(part);
+            var matches = RGBA_RE_2.exec(part);
             if ( !matches ) {
-                convertedParts.push(part);
+                convertedParts.push(checkInnerBrackets(part));
                 continue;
             }
 
@@ -163,7 +164,7 @@ function checkInnerBrackets(string) {
     var parts = list.comma(matches[1]);
     for (var i = 0; i < parts.length; i++) {
         var part = parts[i];
-        convertedParts.push(transformHexAlpha(transformBlackWhiteAlpha(part)));
+        convertedParts.push(transformRgbAlpha(transformHexAlpha(transformBlackWhiteAlpha(part))));
     }
     return string.substr(0, matches.index) + '(' + convertedParts.join(', ') + ')';
 }

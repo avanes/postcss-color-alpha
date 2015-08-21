@@ -1,3 +1,7 @@
+# 0.1.1
+
+- Fixed: converting rgba in gradients
+
 # 0.1.0
 
 - Bumped minor version

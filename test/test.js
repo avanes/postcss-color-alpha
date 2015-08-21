@@ -66,4 +66,8 @@ describe('postcss-color-alpha', function () {
         test('b{ border-color: rgba(#000, .6) rgba(#fff, 0.1) #333 #666 }', 'b{ border-color: rgba(0, 0, 0, 0.6) rgba(255, 255, 255, 0.1) #333 #666 }');
         test('.bg { text-shadow: 1px 1px 1px rgba(#0fc, .1), 3px 3px 5px rgba(#fff, .05);}', '.bg { text-shadow: 1px 1px 1px rgba(0, 255, 204, 0.1), 3px 3px 5px rgba(255, 255, 255, 0.05);}');
     });
+
+    it('converts rgba(#rgb, 0) to rgba(r, g, b, 0)', function() {
+        test('a{ color: rgba(#0fc, 0) }', 'a{ color: rgba(0, 255, 204, 0) }');
+    });
 });

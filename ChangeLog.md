@@ -1,3 +1,7 @@
+# 1.0.0
+
+- Postcss 5.0
+
 # 0.1.2
 
 - Updated: dependencies

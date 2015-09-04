@@ -13,7 +13,7 @@ var RGBA_RE_2   = /^rgba\(#([0-9a-f]{3}|[0-9a-f]{6}),\ ?(0?\.?\d+)\)/i;
 module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
     return function (css, result) {
         // Transform CSS AST here
-        css.eachDecl(function transformDecl(decl) {
+        css.walkDecls(function transformDecl(decl) {
             if ( !decl.value || !(
                     decl.value.match(HEX_A_RE) ||
                     decl.value.match(BW_RE) ||

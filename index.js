@@ -38,10 +38,6 @@ module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
     };
 });
 
-module.exports.postcss = function (css) {
-    return module.exports()(css);
-};
-
 var transformRgbAlpha = function(string) {
     if (!RGBA_RE.test(string))
         return string;

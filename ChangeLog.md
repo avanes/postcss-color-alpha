@@ -1,3 +1,7 @@
+# 1.0.1
+
+- Fixed: Remove extra plugin.postcss hack #11
+
 # 1.0.0
 
 - Postcss 5.0

@@ -1,3 +1,7 @@
+# 1.0.2
+
+- Added: rgba(rgb(), a) syntax
+
 # 1.0.1
 
 - Fixed: Remove extra plugin.postcss hack #11

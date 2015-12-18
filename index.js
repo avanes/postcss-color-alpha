@@ -59,12 +59,8 @@ var transformRgbAlpha = function(string) {
 
             var rgbHex = matches[1];
             var alpha  = matches[2];
-            if ( alpha.indexOf('.') === -1 && alpha !== '1')
-                alpha = '.' + alpha;
-            if ( alpha === '1' )
-                alpha = '';
-            if ( alpha[0] === '0' )
-                alpha = alpha.substr(1);
+            alpha = parseAlpha(alpha);
+
 
             convertedParts.push(part.replace(RGBA_RE, hexAlphaToRgba(rgbHex, alpha)));
 
@@ -94,12 +90,8 @@ var transformHexAlpha = function(string) {
             var alpha  = matches[2];
             if ( typeof alpha === 'undefined' )
                 alpha = '.0';
-            if ( alpha.indexOf('.') === -1 && alpha !== '1')
-                alpha = '.' + alpha;
-            if ( alpha === '1' )
-                alpha = '';
-            if ( alpha[0] === '0' )
-                alpha = alpha.substr(1);
+            alpha = parseAlpha(alpha);
+
             if ( matches[1] === "black" )
                 rgbHex = "000";
             else if ( matches[1] === "white" )
@@ -134,12 +126,8 @@ var transformBlackWhiteAlpha = function(string) {
             alpha  = matches[2];
             if ( typeof alpha === 'undefined' )
                 alpha = '.0';
-            if ( alpha.indexOf('.') === -1 && alpha !== '1')
-                alpha = '.' + alpha;
-            if ( alpha === '1' )
-                alpha = '';
-            if ( alpha[0] === '0' )
-                alpha = alpha.substr(1);
+            alpha = parseAlpha(alpha);
+
             if ( matches[1] === "black" )
                 rgbHex = "000";
             else if ( matches[1] === "white" )
@@ -166,22 +154,15 @@ function checkInnerBrackets(string) {
 }
 
 function hexAlphaToRgba(hex, alpha) {
-    var hexNormalized;
-    var rgb = [];
+    return color('#'+hex).alpha(alpha).rgbaString();
+}
 
-    if ( hex.length === 3 )
-        hexNormalized = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
-    if ( hex.length === 6 )
-        hexNormalized = hex;
-
-    for (var i = 0; i < hexNormalized.length; i += 2) {
-        rgb.push(Math.round(parseInt(hexNormalized.substr(i, 2), 16)));
-    }
-
-    return color({
-        r: rgb[0],
-        g: rgb[1],
-        b: rgb[2],
-        a: alpha
-    }).rgbaString();
+function parseAlpha(alpha) {
+    if ( alpha.indexOf('.') === -1 && alpha !== '1')
+        alpha = '.' + alpha;
+    if ( alpha === '1' )
+        alpha = '';
+    if ( alpha[0] === '0' )
+        alpha = alpha.substr(1);
+    return alpha;
 }

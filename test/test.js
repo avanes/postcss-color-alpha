@@ -73,4 +73,11 @@ describe('postcss-color-alpha', function () {
             'background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0), 100%);'
         );
     });
+
+    it('converts rgba(rgb(), a)', function() {
+        test(
+            'a { color: rgba(rgb(204, 0, 255), 0.4); }',
+            'a { color: rgba(204, 0, 255, 0.4); }'
+        );
+    });
 });

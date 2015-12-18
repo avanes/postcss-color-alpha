@@ -9,6 +9,8 @@ var BW_RE_2     = /^(black|white)\((0?\.?\d+)?\)/i;
 var BRACKETS_RE = /\((..*)\)/;
 var RGBA_RE     = /rgba\(#([0-9a-f]{3}|[0-9a-f]{6}),\ ?(0?\.?\d+)\)/i;
 var RGBA_RE_2   = /^rgba\(#([0-9a-f]{3}|[0-9a-f]{6}),\ ?(0?\.?\d+)\)/i;
+var RGBA_RGB_RE = /rgba\((rgb\([0-9]{1,3},\ ?[0-9]{1,3},\ ?[0-9]{1,3}\)),\ ?(0?\.?\d+)\)/i;
+var RGBA_RGB_RE_2 = /^rgba\((rgb\([0-9]{1,3},\ ?[0-9]{1,3},\ ?[0-9]{1,3}\)),\ ?(0?\.?\d+)\)/i;
 
 module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
     return function (css, result) {
@@ -17,7 +19,8 @@ module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
             if ( !decl.value || !(
                     decl.value.match(HEX_A_RE) ||
                     decl.value.match(BW_RE) ||
-                    decl.value.match(RGBA_RE)
+                    decl.value.match(RGBA_RE) ||
+                    decl.value.match(RGBA_RGB_RE)
                 )
             ) {
                 return;
@@ -32,11 +35,47 @@ module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
             }, decl.source);
 
             decl.value = messageHelpers.try(function () {
+                return transformRgbRgbAlpha(decl.value, decl.source);
+            }, decl.source);
+
+            decl.value = messageHelpers.try(function () {
                 return transformRgbAlpha(decl.value, decl.source);
             }, decl.source);
         });
     };
 });
+
+var transformRgbRgbAlpha = function(string) {
+    if (!RGBA_RGB_RE.test(string))
+        return string;
+
+    var convertedCommaParts = [];
+    var commaParts = list.comma(string);
+
+    for (var i = 0; i < commaParts.length; i++) {
+        var convertedParts = [];
+        var parts = list.space(commaParts[i]);
+        for (var j = 0; j < parts.length; j++) {
+            var part = parts[j];
+
+            var matches = RGBA_RGB_RE_2.exec(part);
+            if ( !matches ) {
+                convertedParts.push(checkInnerBrackets(part));
+                continue;
+            }
+
+            convertedParts.push(
+                part.replace(
+                    RGBA_RGB_RE,
+                    color(matches[1]).alpha(matches[2]).rgbaString()
+                )
+            );
+
+        }
+        convertedCommaParts.push(convertedParts.join(' ').trim());
+    }
+    return convertedCommaParts.join(', ');
+};
 
 var transformRgbAlpha = function(string) {
     if (!RGBA_RE.test(string))
@@ -148,7 +187,15 @@ function checkInnerBrackets(string) {
     var parts = list.comma(matches[1]);
     for (var i = 0; i < parts.length; i++) {
         var part = parts[i];
-        convertedParts.push(transformRgbAlpha(transformHexAlpha(transformBlackWhiteAlpha(part))));
+        convertedParts.push(
+            transformRgbRgbAlpha(
+                transformRgbAlpha(
+                    transformHexAlpha(
+                        transformBlackWhiteAlpha(part)
+                    )
+                )
+            )
+        );
     }
     return string.substr(0, matches.index) + '(' + convertedParts.join(', ') + ')';
 }

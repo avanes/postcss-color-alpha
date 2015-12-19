@@ -1,3 +1,7 @@
+# 1.0.3
+
+- Just code refactoring
+
 # 1.0.2
 
 - Added: rgba(rgb(), a) syntax

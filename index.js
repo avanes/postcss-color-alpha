@@ -1,16 +1,14 @@
-var postcss = require('postcss');
-var color = require("color");
-var messageHelpers = require("postcss-message-helpers");
-var list = postcss.list;
+var postcss = require("postcss"),
+    color = require("color"),
+    messageHelpers = require("postcss-message-helpers"),
+    list = postcss.list;
 
-var HEX_A_RE    = /#([0-9a-f]{3}|[0-9a-f]{6})(\.\d+)\b/i;
-var BW_RE       = /(black|white)\((0?\.?\d+)?\)/i;
-var BW_RE_2     = /^(black|white)\((0?\.?\d+)?\)/i;
-var BRACKETS_RE = /\((..*)\)/;
-var RGBA_RE     = /rgba\(#([0-9a-f]{3}|[0-9a-f]{6}),\ ?(0?\.?\d+)\)/i;
-var RGBA_RE_2   = /^rgba\(#([0-9a-f]{3}|[0-9a-f]{6}),\ ?(0?\.?\d+)\)/i;
-var RGBA_RGB_RE = /rgba\((rgb\([0-9]{1,3},\ ?[0-9]{1,3},\ ?[0-9]{1,3}\)),\ ?(0?\.?\d+)\)/i;
-var RGBA_RGB_RE_2 = /^rgba\((rgb\([0-9]{1,3},\ ?[0-9]{1,3},\ ?[0-9]{1,3}\)),\ ?(0?\.?\d+)\)/i;
+var HEX_A_RE    = /#([0-9a-f]{3}|[0-9a-f]{6})(\.\d+)\b/i,
+    BW_RE       = /(black|white)\((0?\.?\d+)?\)/i,
+    BW_RE_2     = /^(black|white)\((0?\.?\d+)?\)/i,
+    RGBA_RE     = /rgba\(#([0-9a-f]{3}|[0-9a-f]{6}),\ ?(0?\.?\d+)\)/i,
+    RGBA_RGB_RE = /rgba\((rgb\([0-9]{1,3},\ ?[0-9]{1,3},\ ?[0-9]{1,3}\)),\ ?(0?\.?\d+)\)/i,
+    BRACKETS_RE = /\((..*)\)/;
 
 module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
     return function (css, result) {
@@ -18,8 +16,8 @@ module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
         css.walkDecls(function transformDecl(decl) {
             if ( !decl.value || !(
                     decl.value.match(HEX_A_RE) ||
-                    decl.value.match(BW_RE) ||
-                    decl.value.match(RGBA_RE) ||
+                    decl.value.match(BW_RE)    ||
+                    decl.value.match(RGBA_RE)  ||
                     decl.value.match(RGBA_RGB_RE)
                 )
             ) {
@@ -27,28 +25,23 @@ module.exports = postcss.plugin('postcss-color-alpha', function (opts) {
             }
 
             decl.value = messageHelpers.try(function () {
-                return transformBlackWhiteAlpha(decl.value, decl.source);
-            }, decl.source);
-
-            decl.value = messageHelpers.try(function () {
-                return transformHexAlpha(decl.value, decl.source);
-            }, decl.source);
-
-            decl.value = messageHelpers.try(function () {
-                return transformRgbRgbAlpha(decl.value, decl.source);
-            }, decl.source);
-
-            decl.value = messageHelpers.try(function () {
-                return transformRgbAlpha(decl.value, decl.source);
-            }, decl.source);
+                return converter(decl.value);
+            });
         });
     };
 });
 
-var transformRgbRgbAlpha = function(string) {
-    if (!RGBA_RGB_RE.test(string))
-        return string;
+var converter = function (string) {
+    return transformRgbRgbAlpha(
+        transformRgbAlpha(
+            transformHexAlpha(
+                transformBlackWhiteAlpha(string)
+            )
+        )
+    );
+};
 
+var parser = function(string, matcher, matcher2, callback) {
     var convertedCommaParts = [];
     var commaParts = list.comma(string);
 
@@ -58,128 +51,71 @@ var transformRgbRgbAlpha = function(string) {
         for (var j = 0; j < parts.length; j++) {
             var part = parts[j];
 
-            var matches = RGBA_RGB_RE_2.exec(part);
+            var matches = matcher2.exec(part);
             if ( !matches ) {
                 convertedParts.push(checkInnerBrackets(part));
                 continue;
             }
 
-            convertedParts.push(
-                part.replace(
-                    RGBA_RGB_RE,
-                    color(matches[1]).alpha(matches[2]).rgbaString()
-                )
-            );
+            convertedParts.push(callback(matches));
 
         }
         convertedCommaParts.push(convertedParts.join(' ').trim());
     }
     return convertedCommaParts.join(', ');
+};
+
+var transformRgbRgbAlpha = function(string) {
+    return parser(string, RGBA_RGB_RE, RGBA_RGB_RE, function(matches){
+        return color(matches[1]).alpha(matches[2]).rgbaString();
+    });
 };
 
 var transformRgbAlpha = function(string) {
-    if (!RGBA_RE.test(string))
-        return string;
-
-    var convertedCommaParts = [];
-    var commaParts = list.comma(string);
-
-    for (var i = 0; i < commaParts.length; i++) {
-        var convertedParts = [];
-        var parts = list.space(commaParts[i]);
-        for (var j = 0; j < parts.length; j++) {
-            var part = parts[j];
-
-            var matches = RGBA_RE_2.exec(part);
-            if ( !matches ) {
-                convertedParts.push(checkInnerBrackets(part));
-                continue;
-            }
-
-            var rgbHex = matches[1];
-            var alpha  = matches[2];
-            alpha = parseAlpha(alpha);
-
-
-            convertedParts.push(part.replace(RGBA_RE, hexAlphaToRgba(rgbHex, alpha)));
-
-        }
-        convertedCommaParts.push(convertedParts.join(' ').trim());
-    }
-    return convertedCommaParts.join(', ');
+    return parser(string, RGBA_RE, RGBA_RE, function(matches) {
+        return color('#'+matches[1])
+            .alpha(parseAlpha(matches[2]))
+            .rgbaString();
+    });
 };
 
 var transformHexAlpha = function(string) {
-    var convertedCommaParts = [];
-    var commaParts = list.comma(string);
+    return parser(string, HEX_A_RE, HEX_A_RE, function(matches) {
+        var rgbHex = matches[1];
+        if ( matches[1] === "black" )
+            rgbHex = "000";
+        else if ( matches[1] === "white" )
+            rgbHex = "FFF";
 
-    for (var i = 0; i < commaParts.length; i++) {
-        var convertedParts = [];
-        var parts = list.space(commaParts[i]);
-        for (var j = 0; j < parts.length; j++) {
-            var part = parts[j];
+        var alpha  = matches[2];
+        if ( typeof alpha === 'undefined' )
+            alpha = '.0';
+        alpha = parseAlpha(alpha);
 
-            var matches = HEX_A_RE.exec(part);
-            if ( !matches ) {
-                convertedParts.push(checkInnerBrackets(part));
-                continue;
-            }
-
-            var rgbHex = matches[1];
-            var alpha  = matches[2];
-            if ( typeof alpha === 'undefined' )
-                alpha = '.0';
-            alpha = parseAlpha(alpha);
-
-            if ( matches[1] === "black" )
-                rgbHex = "000";
-            else if ( matches[1] === "white" )
-                rgbHex = "FFF";
-
-            convertedParts.push(part.replace(HEX_A_RE, hexAlphaToRgba(rgbHex, alpha)));
-        }
-        convertedCommaParts.push(convertedParts.join(' ').trim());
-    }
-    return convertedCommaParts.join(', ');
+        return color('#' + rgbHex)
+            .alpha(alpha)
+            .rgbaString();
+    });
 };
 
 var transformBlackWhiteAlpha = function(string) {
-    var convertedCommaParts = [];
-    var commaParts = list.comma(string);
+    return parser(string, BW_RE, BW_RE_2, function(matches) {
+        var alpha, rgbHex;
 
-    for (var i = 0; i < commaParts.length; i++) {
-        var convertedParts = [];
-        var parts = list.space(commaParts[i]);
-        for (var j = 0; j < parts.length; j++) {
-            var part = parts[j];
-            var rgbHex;
-            var alpha;
-            var matches = BW_RE_2.exec(part);
+        alpha = matches[2];
+        if ( typeof alpha === 'undefined' )
+            alpha = '.0';
+        alpha = parseAlpha(alpha);
 
-            if ( !matches ) {
-                convertedParts.push(checkInnerBrackets(part));
-                continue;
-            }
-
-            part = checkInnerBrackets(part);
-            alpha  = matches[2];
-            if ( typeof alpha === 'undefined' )
-                alpha = '.0';
-            alpha = parseAlpha(alpha);
-
-            if ( matches[1] === "black" )
-                rgbHex = "000";
-            else if ( matches[1] === "white" )
-                rgbHex = "FFF";
-
-            convertedParts.push('#' + rgbHex + alpha);
-        }
-        convertedCommaParts.push(convertedParts.join(' ').trim());
-    }
-    return convertedCommaParts.join(', ');
+        if ( matches[1] === "black" )
+            rgbHex = "000";
+        else if ( matches[1] === "white" )
+            rgbHex = "FFF";
+        return '#' + rgbHex + alpha;
+    });
 };
 
-function checkInnerBrackets(string) {
+var checkInnerBrackets = function(string) {
     var convertedParts = [];
     var matches = BRACKETS_RE.exec(string);
     if ( !matches )
@@ -187,24 +123,12 @@ function checkInnerBrackets(string) {
     var parts = list.comma(matches[1]);
     for (var i = 0; i < parts.length; i++) {
         var part = parts[i];
-        convertedParts.push(
-            transformRgbRgbAlpha(
-                transformRgbAlpha(
-                    transformHexAlpha(
-                        transformBlackWhiteAlpha(part)
-                    )
-                )
-            )
-        );
+        convertedParts.push(converter(part));
     }
     return string.substr(0, matches.index) + '(' + convertedParts.join(', ') + ')';
-}
+};
 
-function hexAlphaToRgba(hex, alpha) {
-    return color('#'+hex).alpha(alpha).rgbaString();
-}
-
-function parseAlpha(alpha) {
+var parseAlpha = function(alpha) {
     if ( alpha.indexOf('.') === -1 && alpha !== '1')
         alpha = '.' + alpha;
     if ( alpha === '1' )
@@ -212,4 +136,4 @@ function parseAlpha(alpha) {
     if ( alpha[0] === '0' )
         alpha = alpha.substr(1);
     return alpha;
-}
+};

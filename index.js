@@ -67,7 +67,7 @@ var parser = function(string, matcher, matcher2, callback) {
 
 var transformRgbRgbAlpha = function(string) {
     return parser(string, RGBA_RGB_RE, RGBA_RGB_RE, function(matches){
-        return color(matches[1]).alpha(matches[2]).rgbaString();
+        return color(matches[1]).alpha(matches[2]).toString();
     });
 };
 
@@ -75,7 +75,7 @@ var transformRgbAlpha = function(string) {
     return parser(string, RGBA_RE, RGBA_RE, function(matches) {
         return color('#'+matches[1])
             .alpha(parseAlpha(matches[2]))
-            .rgbaString();
+            .toString();
     });
 };
 
@@ -94,7 +94,7 @@ var transformHexAlpha = function(string) {
 
         return color('#' + rgbHex)
             .alpha(alpha)
-            .rgbaString();
+            .toString();
     });
 };
 

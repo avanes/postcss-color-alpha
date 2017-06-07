@@ -16,7 +16,7 @@
     "url": "https://github.com/avanes/postcss-color-alpha.git"
   },
   "dependencies": {
-    "color": "^0.10.1",
+    "color": "^1.0.3",
     "postcss": "^5.0.8",
     "postcss-message-helpers": "^2.0.0"
   },

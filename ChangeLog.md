@@ -1,3 +1,7 @@
+# 2.0.0
+
+- Update postcss and color dependencies
+
 # 1.0.3
 
 - Just code refactoring
